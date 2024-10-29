@@ -1,10 +1,13 @@
 from django.db import models
 
-class AMC(models.Model):
-    advisor_id = models.CharField(max_length=100,blank=True,null=True)
-    advisor_type = models.CharField(max_length=255, null=True)
-    inception_date = models.DateField(null=True, blank=True)
-    manager_count = models.IntegerField(null=True)
+from django.db import models
+
+class CSVData(models.Model):
+
+    isin= models.CharField(max_length=100,primary_key=True)
+    scheme_code = models.CharField(max_length=50)
+    ID = models.CharField(max_length=50)
+    schem_name = models.CharField(max_length=100)
 
 
 class Fund(models.Model):
@@ -13,8 +16,8 @@ class Fund(models.Model):
     investment_name = models.CharField(max_length=255, null=True, blank=True)
     inceptionDate = models.DateField(null=True, blank=True)
     prospectus_benchmark_name = models.CharField(max_length=255, null=True, blank=True)
-    expense_ratio = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    last_turnover_ratio = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    expense_ratio = models.DecimalField(max_digits=5, decimal_places=4, null=True, blank=True)
+    last_turnover_ratio = models.DecimalField(max_digits=5, decimal_places=4, null=True, blank=True)
     equity_style_box = models.CharField(max_length=255, null=True, blank=True)
     expense = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     morningstar_rating = models.IntegerField(null=True, blank=True)
