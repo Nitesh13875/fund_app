@@ -2,7 +2,7 @@ name: Update Stock Data Daily
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   update-stock-data:
