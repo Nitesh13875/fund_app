@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MF App - Home</title>
     <link rel="stylesheet" href="{% static 'home_css.css' %}">
+    <link rel="stylesheet" href="{% static 'commands.css' %}">
     <meta name="csrf-token" content="{% csrf_token %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -13,7 +14,7 @@
     <div class="container">
         <header class="header">
             <h1>MUTUAL FUND DETAILS</h1>
-            <p>Get the Mutual fund Details at a glance!</p>
+            <p>Get the Mutual Fund details at a glance!</p>
         </header>
 
         <nav class="navbar">
@@ -23,65 +24,10 @@
                 <li><a href="{% url 'fund_dashboard' %}">Fund Dashboard</a></li>
             </ul>
         </nav>
-
-        <section class="commands">
-            <h2>Run Commands</h2>
-            <button class="command-btn" id="fetch_main">Run fetch_main</button>
-            <button class="command-btn" id="perfor">Run perfor</button>
-        </section>
-
         <div id="output" class="output"></div>
-
         <footer class="footer">
             <p>&copy; {{ year }} MF App. All rights reserved.</p>
         </footer>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $('#fetch_main').click(function() {
-                runCommand('fetch_main');
-            });
-
-            $('#perfor').click(function() {
-                runCommand('perfor');
-            });
-
-            function runCommand(command) {
-                const csrftoken = $('meta[name="csrf-token"]').attr('content');
-                $.ajax({
-                    type: 'POST',
-                    url: `/run-command/${command}/`,
-                    headers: { 'X-CSRFToken': csrftoken },
-                    success: function(response) {
-                        $('#output').html(`<pre>${response.status}</pre>`);
-                        checkTaskStatus(response.task_id);  // Start polling for task status
-                    },
-                    error: function(xhr) {
-                        $('#output').html(`<pre>Error: ${xhr.responseJSON.error}</pre>`);
-                    }
-                });
-            }
-
-            function checkTaskStatus(taskId) {
-                $.ajax({
-                    type: 'GET',
-                    url: `/task-status/${taskId}/`,
-                    success: function(response) {
-                        $('#output').html(`<pre>Task ID: ${response.task_id}\nStatus: ${response.status}\nResult: ${response.result || 'Pending...'}</pre>`);
-                        if (response.status !== 'SUCCESS') {
-                            // Poll every 5 seconds if the task is not complete
-                            setTimeout(function() {
-                                checkTaskStatus(taskId);
-                            }, 5000);
-                        }
-                    },
-                    error: function(xhr) {
-                        $('#output').html(`<pre>Error checking task status: ${xhr.responseJSON.error}</pre>`);
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>

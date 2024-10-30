@@ -5,6 +5,8 @@ from .models import Fund, CSVData, Dt, StockDataRefresh ,Settings
 from django.shortcuts import render, redirect
 from datetime import datetime
 from .forms1 import AccessTokenForm
+import logging
+
 
 from django.shortcuts import render, redirect
 from .models import Settings
@@ -13,17 +15,20 @@ import requests
 def home(request):
     return render(request, 'home.html')
 
+
 def process_csv_upload(request):
     last_refresh_time = "Never"
     last_refresh_entries = StockDataRefresh.objects.order_by('-last_refresh_time')
-    if last_refresh_entries.count() > 5:
-        excess_entries = last_refresh_entries[5:]
-        excess_entries.delete()
-    last_refresh = StockDataRefresh.objects.order_by('-last_refresh_time').first()
 
+    # Check if there are more than 5 entries and delete the excess without using offset directly
+    if last_refresh_entries.count() > 5:
+        excess_entries = list(last_refresh_entries[5:])
+        for entry in excess_entries:
+            entry.delete()
+
+    last_refresh = StockDataRefresh.objects.order_by('-last_refresh_time').first()
     if last_refresh:
         last_refresh_time = last_refresh.last_refresh_time
-
 
     if request.method == 'POST':
         form = UploadCSVForm(request.POST, request.FILES)
@@ -38,7 +43,6 @@ def process_csv_upload(request):
             output_data = []
             for _, row in df.iterrows():
                 isin = row['isin']
-
                 fund = Fund.objects.filter(isin=isin).first()
                 csv_data = CSVData.objects.filter(isin=isin).first()
                 dt = Dt.objects.filter(scheme_id=csv_data.scheme_id if csv_data else None).first()
@@ -78,8 +82,6 @@ def process_csv_upload(request):
 
 
 
-
-
 def update_access_token(request):
     if request.method == 'POST':
         form = AccessTokenForm(request.POST)
@@ -100,27 +102,3 @@ def update_access_token(request):
     # Pass existing tokens to the template
     tokens = Settings.objects.all()
     return render(request, r'C:\Users\nites\Desktop\MF\mfp\mfapp\templates\update_access_token.html', {'form': form, 'tokens': tokens})
-
-# views.py
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.management import call_command
-import logging
-import socket
-
-logger = logging.getLogger(__name__)
-
-@csrf_exempt  # This should only be used if you are certain you need it
-def run_command(request, command):
-    if request.method == 'POST':
-        try:
-            # Call the management command
-            call_command(command)
-            output = f"{command} executed successfully."
-            logger.info(output)
-            return JsonResponse({'output': output})
-        except Exception as e:
-            logger.error(f"Error running command {command}: {str(e)}")
-            return JsonResponse({'error': str(e)}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=405)

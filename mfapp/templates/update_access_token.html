@@ -1,42 +1,29 @@
-{% load static %}
+<!-- update_access_token.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Access Token</title>
-    <link rel="stylesheet" href="{% static 'home_css.css' %}"> <!-- Use your existing CSS -->
-    <meta name="csrf-token" content="{% csrf_token %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>Update Access Token</h1>
-            <p>Manage your access tokens here.</p>
-        </header>
+    <div class="container mt-5">
+        <h2>Update Access Token</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Token</button>
+        </form>
 
-        <section class="token-update-form">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}  <!-- Renders the form fields -->
-                <button type="submit" class="command-btn">Update Token</button>
-            </form>
-        </section>
-
-        <section class="existing-tokens mt-4">
-            <h3>Existing Tokens</h3>
-            <ul>
-                {% for token in tokens %}
-                    <li>{{ token.token }} (added on {{ token.created_at }})</li>
-                {% empty %}
-                    <li>No tokens stored yet.</li>
-                {% endfor %}
-            </ul>
-        </section>
-
-        <footer class="footer">
-            <p>&copy; {{ year }} MF App. All rights reserved.</p>
-        </footer>
+        <h3 class="mt-4">Existing Tokens</h3>
+        <ul>
+            {% for token in tokens %}
+                <li>{{ token.token }} (added on {{ token.created_at }})</li>
+            {% empty %}
+                <li>No tokens stored yet.</li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 </html>

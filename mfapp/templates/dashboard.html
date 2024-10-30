@@ -1,21 +1,23 @@
-{% load static %}
+{%load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload CSV</title>
-    <link rel="stylesheet" href="{% static 'home_css.css' %}"> <!-- Use your existing CSS -->
+    <link rel="stylesheet" href="{% static 'styles1.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <h1>Know Your Mutual Fund Details</h1>
+    <header class="bg-primary text-white text-center py-4">
+        <h1>Know Your Mutual Fund Details </h1>
         <p>Upload your CSV files and process them easily!</p>
     </header>
 
     <!-- Main Content -->
-    <div class="container">
+    <div class="container d-flex justify-content-center align-items-center full-height">
         <div class="text-center">
             <h2 class="mb-4">Upload CSV File</h2>
             <form method="post" enctype="multipart/form-data" action="{% url 'process_csv_upload' %}">
@@ -24,7 +26,7 @@
                     <label for="file" class="sr-only">Choose CSV File</label>
                     {{ form.file }}
                 </div>
-                <button type="submit" class="command-btn">Upload and Process</button>
+                <button type="submit" class="btn btn-primary mt-2">Upload and Process</button>
             </form>
             {% if messages %}
                 <div class="mt-4">
@@ -35,5 +37,11 @@
             {% endif %}
         </div>
     </div>
-</body>
-</html>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-3">
+    <p>&copy; {{ 2024 }} Nitesh Mishra.</p>
+    <p>Last Data Updation at: {{ last_refresh_time }}</p>
+    <p>Contact me at 📧<a href="mailto:nitesh.mishra@angelbroking.com">nitesh.mishra@angelbroking.com</a></p>
+</footer>
+
