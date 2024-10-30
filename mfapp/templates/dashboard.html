@@ -4,35 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mutual Fund Historical Data</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{% static 'chart.js' %}"></script>  <!-- Link to your JS file -->
+    <title>Upload CSV</title>
+    <link rel="stylesheet" href="{% static 'home_css.css' %}"> <!-- Use your existing CSS -->
 </head>
 <body>
-    <h1>Mutual Fund Historical Data</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="query" placeholder="Enter ID, ISIN, Scheme Name, or Scheme Code" required>
-        <button type="submit">Search</button>
-    </form>
+    <!-- Header -->
+    <header class="header">
+        <h1>Know Your Mutual Fund Details</h1>
+        <p>Upload your CSV files and process them easily!</p>
+    </header>
 
-    {% if error %}
-        <p class="error-message">{{ error }}</p>
-    {% endif %}
-
-    {% if dates and navs %}
-        <div class="chart-container">
-            <canvas id="fundChart"></canvas>
-            <!-- Hidden elements to store data -->
-            <script type="text/javascript">
-                document.write('<script type="text/json" id="datesData">' + JSON.stringify({{ dates|safe }}) + '</' + 'script>');
-                document.write('<script type="text/json" id="navsData">' + JSON.stringify({{ navs|safe }}) + '</' + 'script>');
-                document.write('<script type="text/json" id="schemeNameData">{{ scheme_name|escape }}</' + 'script>');
-            </script>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="text-center">
+            <h2 class="mb-4">Upload CSV File</h2>
+            <form method="post" enctype="multipart/form-data" action="{% url 'process_csv_upload' %}">
+                {% csrf_token %}
+                <div class="form-group file-input-wrapper">
+                    <label for="file" class="sr-only">Choose CSV File</label>
+                    {{ form.file }}
+                </div>
+                <button type="submit" class="command-btn">Upload and Process</button>
+            </form>
+            {% if messages %}
+                <div class="mt-4">
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-    {% elif query is not none %}
-        <p>No data available for the selected fund.</p>
-    {% endif %}
+    </div>
 </body>
 </html>

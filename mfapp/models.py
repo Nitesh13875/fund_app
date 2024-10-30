@@ -1,14 +1,11 @@
-from django.db import models
-
+from django.utils import timezone
 from django.db import models
 
 class CSVData(models.Model):
-
-    isin= models.CharField(max_length=100,primary_key=True)
-    scheme_code = models.CharField(max_length=50)
-    ID = models.CharField(max_length=50)
-    schem_name = models.CharField(max_length=100)
-
+    isin= models.CharField(max_length=40,null=True,blank=True)
+    scheme_code = models.CharField(max_length=50,null=True,blank=True)
+    scheme_id = models.CharField(max_length=50,null=True,blank=True)
+    scheme_name = models.CharField(max_length=100,null=True,blank=True)
 
 class Fund(models.Model):
     sec_id = models.CharField(max_length=255, null=True, blank=True)
@@ -16,12 +13,25 @@ class Fund(models.Model):
     investment_name = models.CharField(max_length=255, null=True, blank=True)
     inceptionDate = models.DateField(null=True, blank=True)
     prospectus_benchmark_name = models.CharField(max_length=255, null=True, blank=True)
-    expense_ratio = models.DecimalField(max_digits=5, decimal_places=4, null=True, blank=True)
-    last_turnover_ratio = models.DecimalField(max_digits=5, decimal_places=4, null=True, blank=True)
+    expense_ratio = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    last_turnover_ratio = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
     equity_style_box = models.CharField(max_length=255, null=True, blank=True)
-    expense = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    expense = models.DecimalField(max_digits=20, decimal_places=4, null=True, blank=True)
     morningstar_rating = models.IntegerField(null=True, blank=True)
-    total_asset = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    total_asset = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+
+class StockDataRefresh(models.Model):
+    last_refresh_time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Last refreshed at {self.last_refresh_time}"
+
+class Settings(models.Model):
+    access_token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.access_token
+
 
 class Dt(models.Model):
     scheme_id = models.CharField(max_length=25, blank=True, null=True)
@@ -33,11 +43,10 @@ class Dt(models.Model):
 
 
 class RiskVolatility(models.Model):
-    fund_id = models.CharField(max_length=100, primary_key=True)
+    fund_id = models.CharField(max_length=100,null=True)
     fund_name = models.CharField(max_length=255, null=True, blank=True)
     category_name = models.CharField(max_length=255, null=True, blank=True)
     index_name = models.CharField(max_length=255, null=True, blank=True)
-    calculation_benchmark = models.CharField(max_length=255, null=True, blank=True)
 
     # Fund Risk Volatility for different time periods
     fund_alpha_1y = models.FloatField(null=True, blank=True)
@@ -93,8 +102,6 @@ class Portfolio(models.Model):
     last_turnover = models.FloatField(null=True, blank=True)
     last_turnover_date = models.DateField(null=True, blank=True)
     average_turnover_ratio = models.FloatField(null=True, blank=True)
-    women_directors_percentage = models.FloatField(null=True, blank=True)
-    women_executives_percentage = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return f"Portfolio {self.master_portfolio_id} - {self.sec_id}"

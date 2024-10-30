@@ -1,74 +1,21 @@
-{% extends 'analysis/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+</head>
+<body>
+    <h1>Upload CSV File</h1>
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload_csv' %}">
+        {% csrf_token %}
+        <label for="csv_file">Select a CSV file:</label>
+        <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+        <button type="submit">Upload</button>
+    </form>
 
-{% block title %}Home - Mutual Fund Analysis{% endblock %}
-
-{% block content %}
-<div class="home-container">
-    <h1>Welcome to Mutual Fund Analysis</h1>
-    <p>Analyze your investments and gain insights into fund performance.</p>
-
-    <div class="card-container">
-        <div class="card" data-fund-name="Performance Analysis">
-            <h2>Performance Analysis</h2>
-            <p>Analyze your investments and gain insights into fund performance.</p>
-            <a href="{% url 'performance_analysis' %}" class="btn">Start Checking</a>
-        </div>
-
-        <div class="card" data-fund-name="Risk Assessment">
-            <h2>Risk Assessment</h2>
-            <p>Understand the risks associated with your investments.</p>
-            <a href="{% url 'risk_assessment' %}" class="btn">Start Checking</a>
-        </div>
-
-        <div class="card" data-fund-name="Portfolio Insights">
-            <h2>Portfolio Insights</h2>
-            <p>Get detailed insights into your portfolio.</p>
-            <a href="{% url 'portfolio_insights' %}" class="btn">Start Checking</a>
-        </div>
-
-        <div class="card" data-fund-name="Portfolio Funds">
-            <h2>Portfolio Funds</h2>
-            <p>Review and manage your portfolio funds.</p>
-            <a href="{% url 'portfolio_funds' %}" class="btn">Start Checking</a>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Add some basic styles for the home page */
-    .home-container {
-        text-align: center;
-        margin: 20px;
-    }
-    .card-container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        margin: 10px;
-        width: 200px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-    }
-    .card:hover {
-        transform: scale(1.05);
-    }
-    .btn {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 15px;
-        background-color: #007BFF;
-        color: #fff;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    .btn:hover {
-        background-color: #0056b3;
-    }
-</style>
-{% endblock %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

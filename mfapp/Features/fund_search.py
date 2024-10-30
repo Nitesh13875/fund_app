@@ -1,10 +1,9 @@
 # mfapp/feature/fund_search.py
-
 import requests
 import logging
 from django.db.models import Q
 from mfapp.forms import FundSearchForm
-# from mfapp.models import Dt
+from mfapp.models import Dt,CSVData
 from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
@@ -27,7 +26,7 @@ def fund_dashboard(request):
             logger.info(f"User searched for: {query}")
 
             try:
-                mutual_fund = Dt.objects.get(
+                mutual_fund = CSVData.objects.get(
                     Q(scheme_name__icontains=query) |
                     Q(scheme_id__iexact=query) |
                     Q(isin__iexact=query) |
@@ -55,4 +54,4 @@ def fund_dashboard(request):
                 logger.error(f"Unexpected error: {str(e)}")
 
     # Return an HttpResponse using render
-    return render(request, 'dashboard.html', context)
+    return render(request, 'hello.html', context)

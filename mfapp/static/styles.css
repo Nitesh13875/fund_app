@@ -1,61 +1,98 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
     color: #333;
-    margin: 0;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-    color: #007bff;
-}
-
-form {
+    background: #f5f9f6; /* Light background */
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
-input[type="text"] {
+.container {
+    max-width: 800px;
+    width: 100%;
+    margin: 20px;
+    background: #ffffff; /* White background for container */
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.header {
+    background: #4CAF50; /* Nature-inspired green */
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5em; /* Larger heading */
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0; /* Add margin above and below */
+}
+
+.search-form input {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px;
-    margin-right: 10px;
-    transition: border 0.3s;
+    width: 60%; /* Adjust width as needed */
+    margin-right: 10px; /* Space between input and button */
 }
 
-input[type="text"]:focus {
-    border-color: #007bff;
-}
-
-button {
-    padding: 10px 15px;
+.search-form button {
+    padding: 10px 20px;
+    background: #4CAF50; /* Match button with header */
+    color: #fff;
     border: none;
-    background-color: #007bff;
-    color: white;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-.chart-container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 20px;
-    height: 300px;
+.search-form button:hover {
+    background: #388e3c; /* Darker green on hover */
 }
 
 .error-message {
-    color: red;
+    color: #d32f2f; /* Red color for error messages */
     text-align: center;
-    margin-top: 20px;
+    margin: 15px 0; /* Margin for spacing */
+}
+
+.chart-container {
+    margin-top: 20px; /* Space above the chart */
+}
+
+.footer {
+    background: #4CAF50;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px; /* Space between content and footer */
+}
+
+/* Additional Styles for Responsive Design */
+@media (max-width: 600px) {
+    .search-form {
+        flex-direction: column; /* Stack elements on smaller screens */
+        align-items: center; /* Center elements */
+    }
+
+    .search-form input {
+        width: 100%; /* Full width on small screens */
+        margin-right: 0; /* Remove margin */
+        margin-bottom: 10px; /* Space below the input */
+    }
 }

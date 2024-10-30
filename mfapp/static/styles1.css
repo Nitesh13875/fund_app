@@ -1,0 +1,16 @@
+/* Centering the form in the viewport */
+.full-height {
+    height: 100vh;
+}
+/* Wrapper to center file input */
+.file-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+/* Centering the file input field */
+input[type="file"] {
+    display: block;
+    margin: 0 auto;
+}

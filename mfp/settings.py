@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -116,7 +116,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/css/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'mfapp/static',  # Adjust based on your app's location
@@ -128,3 +128,45 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+
+import logging
+
+class IgnoreBrokenPipeFilter(logging.Filter):
+    def filter(self, record):
+        return "Broken pipe" not in record.getMessage()
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'ignore_broken_pipe': {
+            '()': IgnoreBrokenPipeFilter,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['ignore_broken_pipe'],
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'mfapp': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # Change to WARNING to suppress INFO level logs
+            'propagate': False,
+        },
+    },
+}
+
+
+# settings.py
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Adjust if you're using a different Redis setup
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

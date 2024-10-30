@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutual Fund Historical Data</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'chart.js' %}"></script>  <!-- Link to your JS file -->
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Mutual Fund Historical Data</h1>
+        </header>
+
+        <form method="post" class="search-form">
+            {% csrf_token %}
+            <input type="text" name="query" placeholder="Enter ID, ISIN, Scheme Name, or Scheme Code" required>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        {% if dates and navs %}
+            <div class="chart-container">
+                <canvas id="fundChart"></canvas>
+                <!-- Hidden elements to store data -->
+                <script type="text/javascript">
+                    document.write('<script type="text/json" id="datesData">' + JSON.stringify({{ dates|safe }}) + '</' + 'script>');
+                    document.write('<script type="text/json" id="navsData">' + JSON.stringify({{ navs|safe }}) + '</' + 'script>');
+                    document.write('<script type="text/json" id="schemeNameData">{{ scheme_name|escape }}</' + 'script>');
+                </script>
+            </div>
+        {% elif query is not none %}
+            <p>No data available for the selected fund.</p>
+        {% endif %}
+
+        <footer class="footer">
+            <p>&copy; {{ year }} MF App. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,12 +1,12 @@
 import csv
 from django.core.management.base import BaseCommand
-from mfapp.models import Dt
+from mfapp.models import Dt, CSVData ,StockDataRefresh # Ensure CSVData is imported
 import requests
 from datetime import datetime, timedelta
 import logging
 
-logging.basicConfig(level=logging.INFO)
 
+logging.basicConfig(level=logging.INFO)
 
 class Command(BaseCommand):
     help = 'Load data from data.csv into Dt model and calculate returns'
@@ -20,7 +20,6 @@ class Command(BaseCommand):
                 logging.warning(f"No NAV data returned for scheme code: {scheme_code}")
             return data
         else:
-            logging.error(f"Error fetching data for Scheme Code: {scheme_code}")
             return None
 
     def get_closest_nav(self, nav_data, target_date):
@@ -29,7 +28,6 @@ class Command(BaseCommand):
             nav_date = datetime.strptime(entry['date'], '%d-%m-%Y')
             if nav_date <= target_date:
                 return float(entry['nav'])
-        logging.warning(f"No NAV found on or before target date")
         return None
 
     def calculate_returns(self, nav_data):
@@ -52,15 +50,12 @@ class Command(BaseCommand):
 
         for period, date in periods.items():
             if trading_days < required_days[period]:
-                logging.info(f"Insufficient trading days for {period}")
                 returns[period] = None
                 continue
             nav_past = self.get_closest_nav(nav_data, date)
             if nav_past:
                 returns[period] = round(((nav_today / nav_past) - 1) * 100, 2)
-                logging.info(f"Calculated {period} return: {returns[period]}")
             else:
-                logging.warning(f"No NAV found for {period} period ending {date}")
                 returns[period] = None
 
         return (
@@ -69,29 +64,26 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        with open(r'C:\Users\nites\Desktop\MF\data_100.csv', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                scheme_code = row['scheme_code']
-                nav_data = self.fetch_nav_history(scheme_code)
+        csv_data_objects = CSVData.objects.all()
+        for obj in csv_data_objects:
+            scheme_code = obj.scheme_code
+            nav_data = self.fetch_nav_history(scheme_code)
 
-                if nav_data:
-                    one_month_return, six_month_return, one_year_return, three_year_return, five_year_return = self.calculate_returns(
-                        nav_data)
-                else:
-                    one_month_return = six_month_return = one_year_return = three_year_return = five_year_return = None
-                    logging.warning(f"No NAV data available for this scheme")
+            if nav_data:
+                one_month_return, six_month_return, one_year_return, three_year_return, five_year_return = self.calculate_returns(
+                    nav_data)
+            else:
+                one_month_return = six_month_return = one_year_return = three_year_return = five_year_return = None
 
-                Dt.objects.update_or_create(
-                    scheme_id=row['ID'],
-                    defaults={
-                        'one_month_return': one_month_return,
-                        'six_month_return': six_month_return,
-                        'one_year_return': one_year_return,
-                        'three_year_return': three_year_return,
-                        'five_year_return': five_year_return
-                    }
-                )
-                logging.info(f"Updated/cretaed")
-
-        self.stdout.write(self.style.SUCCESS('Data loaded and returns calculated successfully'))
+            Dt.objects.update_or_create(
+                scheme_id=obj.scheme_id,
+                defaults={
+                    'one_month_return': one_month_return,
+                    'six_month_return': six_month_return,
+                    'one_year_return': one_year_return,
+                    'three_year_return': three_year_return,
+                    'five_year_return': five_year_return
+                }
+            )
+            self.stdout.write(self.style.SUCCESS(f"Stored data!"))
+        StockDataRefresh.objects.create()
