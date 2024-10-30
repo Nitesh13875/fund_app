@@ -170,3 +170,4 @@ LOGGING = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Adjust if you're using a different Redis setup
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+ALLOWED_HOSTS = ['mfp.vercel.app', 'localhost', '127.0.0.1']
