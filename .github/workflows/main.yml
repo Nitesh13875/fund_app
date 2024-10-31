@@ -1,8 +1,8 @@
-name: Update Stock Data Every 6 Minutes
+name: Update Stock Data Every 5 Hours
 
 on:
   schedule:
-    - cron: '*/6 * * * *'  # This runs the job every 6 minutes
+    - cron: '0 */2 * * *'
 
 jobs:
   update-stock-data:
@@ -27,17 +27,14 @@ jobs:
         run: |
           python manage.py fetch_main
 
-      - name: Update stock info
+      - name: Update stock holdings
         run: |
           python manage.py holding 
 
       - name: Update stock info
         run: |
-          python manage.py metadata 
-
-      - name: Update stock info
-        run: |
           python manage.py risk
           
-        
-          
+      - name: Update stock info
+        run: |
+          python manage.py perfor
