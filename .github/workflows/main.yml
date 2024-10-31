@@ -1,8 +1,8 @@
-name: Update Stock Data Every 5 Hours
+name: Scheduled Action
 
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '*/50 * * * *'  # This runs every 10 minutes
 
 jobs:
   update-stock-data:
