@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from mfapp.models import Fund, Portfolio, Holding, RiskVolatility, CSVData, Settings  # Make sure to import AccessToken
+from mfapp.models import Fund, Portfolio, Holding, RiskVolatility, CSVData, Settings
 from datetime import datetime, timedelta
 
 class Command(BaseCommand):
@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         try:
             # Fetch the most recent access token
-            latest_setting = Settings.objects.order_by('-created_at').first()  # Corrected fetching logic
+            latest_setting = Settings.objects.order_by('-created_at').first()
             if not latest_setting:
                 self.stdout.write(self.style.ERROR('Access token not set.'))
                 return
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 return
 
             # Fetch and save risk volatility for the collected IDs
-            self.fetch_fund_data(ids_list)  # Call the fetch_fund_data method
+            self.fetch_fund_data(ids_list)
 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error in handle method: {str(e)}"))
@@ -47,7 +47,9 @@ class Command(BaseCommand):
 
     def fetch_fund_data(self, ids):
         for fund_id in ids:
-            url = f"https://api-global.morningstar.com/sal-service/v1/fund/quote/v4/{fund_id}/data?fundServCode=&showAnalystRatingChinaFund=false&showAnalystRating=false&languageId=en&locale=en&clientId=RSIN_SAL&benchmarkId=mstarorcat&component=sal-mip-quote&version=4.13.0&access_token={self.ACCESS_TOKEN}"
+            url = (f"https://api-global.morningstar.com/sal-service/v1/fund/quote/v4/{fund_id}/data?fundServCode=&"
+                   f"showAnalystRatingChinaFund=false&showAnalystRating=false&languageId=en&locale=en&clientId=RSIN_SAL&"
+                   f"benchmarkId=mstarorcat&component=sal-mip-quote&version=4.13.0&access_token={self.ACCESS_TOKEN}")
             response = self.fetch_data(url)
             if not response:
                 continue
@@ -67,5 +69,6 @@ class Command(BaseCommand):
                 "total_asset": float(fund_data.get("totalAsset")) if fund_data.get("totalAsset") not in [None, 'NA', ''] else None,
             }
 
+            # Create or update the Fund entry
             Fund.objects.update_or_create(sec_id=sec_id, defaults=fund_defaults)
-            self.stdout.write(self.style.SUCCESS(f"Stored data for Fund ID: {fund_id}"))
+            self.stdout.write(self.style.SUCCESS(f"Stored data for Fund ID: {fund_id}"))  # Moved here
