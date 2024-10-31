@@ -38,3 +38,4 @@ jobs:
       - name: Update stock perfor
         run: |
           python manage.py perfor
+
