@@ -4,9 +4,6 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from mfapp.models import Fund, Portfolio, Holding, RiskVolatility, CSVData, Settings  # Make sure to import AccessToken
 from datetime import datetime, timedelta
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 class Command(BaseCommand):
     help = 'Fetch and store AMC, Fund, Portfolio, and Holdings data from Morningstar API'
@@ -34,7 +31,7 @@ class Command(BaseCommand):
                 return
 
             # Fetch and save risk volatility for the collected IDs
-            self.fetch_fund_data(ids_list)
+            self.fetch_fund_data(ids_list)  # Call the fetch_fund_data method
 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error in handle method: {str(e)}"))
@@ -48,9 +45,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"Error fetching data: {e}"))
             return None
 
-    def fetch_fund_data(self, ids, access_token):
+    def fetch_fund_data(self, ids):
         for fund_id in ids:
-            url = f"https://api-global.morningstar.com/sal-service/v1/fund/quote/v4/{fund_id}/data?fundServCode=&showAnalystRatingChinaFund=false&showAnalystRating=false&languageId=en&locale=en&clientId=RSIN_SAL&benchmarkId=mstarorcat&component=sal-mip-quote&version=4.13.0&access_token={access_token}"
+            url = f"https://api-global.morningstar.com/sal-service/v1/fund/quote/v4/{fund_id}/data?fundServCode=&showAnalystRatingChinaFund=false&showAnalystRating=false&languageId=en&locale=en&clientId=RSIN_SAL&benchmarkId=mstarorcat&component=sal-mip-quote&version=4.13.0&access_token={self.ACCESS_TOKEN}"
             response = self.fetch_data(url)
             if not response:
                 continue

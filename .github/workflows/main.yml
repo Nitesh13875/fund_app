@@ -35,6 +35,6 @@ jobs:
         run: |
           python manage.py risk
           
-      - name: Update stock info
+      - name: Update stock performance
         run: |
           python manage.py perfor
