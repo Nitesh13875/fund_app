@@ -37,4 +37,4 @@ jobs:
           
       - name: Update stock performance
         run: |
-          python manage.py performance  # Ensure this command is correct
+          python manage.py perfor  # Ensure this command is correct
