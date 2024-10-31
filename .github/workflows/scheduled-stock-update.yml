@@ -3,6 +3,7 @@ name: Scheduled Stock Update
 on:
   schedule:
     - cron: '*/10 * * * *'  # This runs every 10 minutes
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   update-stock-data:
@@ -36,4 +37,4 @@ jobs:
           
       - name: Update stock performance
         run: |
-          python manage.py performance  # Make sure this command is correct
+          python manage.py performance  # Ensure this command is correct
