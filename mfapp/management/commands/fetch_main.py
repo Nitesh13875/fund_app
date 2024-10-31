@@ -1,10 +1,10 @@
 import csv
 from django.core.management.base import BaseCommand
-from mfapp.models import Dt, CSVData ,StockDataRefresh # Ensure CSVData is imported
+from mfapp.models import Dt, CSVData, StockDataRefresh  # Ensure CSVData is imported
 import requests
 from datetime import datetime, timedelta
 import logging
-
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,14 +13,22 @@ class Command(BaseCommand):
 
     def fetch_nav_history(self, scheme_code):
         url = f"https://api.mfapi.in/mf/{scheme_code}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json().get('data', [])
-            if not data:
-                logging.warning(f"No NAV data returned for scheme code: {scheme_code}")
-            return data
-        else:
-            return None
+        retries = 3  # Number of retries
+        for attempt in range(retries):
+            try:
+                response = requests.get(url, timeout=10)  # Set a timeout for the request
+                response.raise_for_status()  # Raise an error for HTTP errors
+                data = response.json().get('data', [])
+                if not data:
+                    logging.warning(f"No NAV data returned for scheme code: {scheme_code}")
+                return data
+            except requests.exceptions.ChunkedEncodingError:
+                logging.warning("ChunkedEncodingError: Response ended prematurely. Retrying...")
+                time.sleep(2)  # Wait before retrying
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Request failed: {e}")
+                break  # Exit the loop if a non-retryable error occurs
+        return None
 
     def get_closest_nav(self, nav_data, target_date):
         nav_data_sorted = sorted(nav_data, key=lambda x: datetime.strptime(x['date'], '%d-%m-%Y'), reverse=True)
@@ -85,5 +93,8 @@ class Command(BaseCommand):
                     'five_year_return': five_year_return
                 }
             )
-            self.stdout.write(self.style.SUCCESS(f"Stored data!"))
+            self.stdout.write(self.style.SUCCESS(f"Stored data for scheme code: {scheme_code}"))
+
+        # Log the stock data refresh
         StockDataRefresh.objects.create()
+        self.stdout.write(self.style.SUCCESS("Stock data refresh record created."))
