@@ -3,10 +3,7 @@ import requests
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from mfapp.models import Holding, RiskVolatility, CSVData, Settings
-import logging
 import time
-
-logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -55,7 +52,6 @@ class Command(BaseCommand):
                    f"benchmarkId=mstarorcat&component=sal-mip-risk-volatility-measures&version=4.13.0&"
                    f"access_token={self.ACCESS_TOKEN}")
 
-            logging.info(f"Fetching data for Fund ID: {fund_id}")
             response = self.fetch_data(url)
             if not response:
                 continue
