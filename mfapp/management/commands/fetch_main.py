@@ -86,6 +86,12 @@ class Command(BaseCommand):
                 }
             )
 
+            # Log the result of the operation
+            if created:
+                logging.info(f"Created new Dt entry for scheme ID {obj.scheme_id}.")
+            else:
+                logging.info(f"Updated existing Dt entry for scheme ID {obj.scheme_id}.")
+
         # Log stock data refresh completion
         StockDataRefresh.objects.create()
         logging.info("Stock data refresh completed.")
