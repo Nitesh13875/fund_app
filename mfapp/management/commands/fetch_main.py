@@ -1,4 +1,3 @@
-import csv
 from django.core.management.base import BaseCommand
 from mfapp.models import Dt, CSVData, StockDataRefresh
 import requests
@@ -63,7 +62,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        dt_updates = []
         csv_data_objects = CSVData.objects.all()
 
         for obj in csv_data_objects:
@@ -76,22 +74,17 @@ class Command(BaseCommand):
             else:
                 one_month_return = six_month_return = one_year_return = three_year_return = five_year_return = None
 
-            # Gather update information
-            dt_updates.append(
-                Dt(
-                    scheme_id=obj.scheme_id,
-                    one_month_return=one_month_return,
-                    six_month_return=six_month_return,
-                    one_year_return=one_year_return,
-                    three_year_return=three_year_return,
-                    five_year_return=five_year_return
-                )
+            # Update or create each Dt object
+            dt, created = Dt.objects.update_or_create(
+                scheme_id=obj.scheme_id,
+                defaults={
+                    'one_month_return': one_month_return,
+                    'six_month_return': six_month_return,
+                    'one_year_return': one_year_return,
+                    'three_year_return': three_year_return,
+                    'five_year_return': five_year_return
+                }
             )
-
-        # Bulk update Dt table with all updates
-        Dt.objects.bulk_update(dt_updates, [
-            'one_month_return', 'six_month_return', 'one_year_return', 'three_year_return', 'five_year_return'
-        ], batch_size=100)
 
         # Log stock data refresh completion
         StockDataRefresh.objects.create()
