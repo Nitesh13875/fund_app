@@ -2,7 +2,7 @@ name: Scheduled Action
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # This runs every 10 minutes
+    - cron: '*/50 * * * *'  # This runs every 10 minutes
 
 jobs:
   update-stock-data:
