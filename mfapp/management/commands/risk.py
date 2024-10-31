@@ -100,4 +100,3 @@ class Command(BaseCommand):
                 )
 
                 self.stdout.write(self.style.SUCCESS(f"Stored data for Fund ID: {fund_id}"))
-            time.sleep(1)  # Delay between API calls
