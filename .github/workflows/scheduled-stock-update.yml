@@ -1,4 +1,4 @@
-name: Scheduled Stock Update
+name: Scheduled
 
 on:
   schedule:
