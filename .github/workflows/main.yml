@@ -1,4 +1,4 @@
-name: Update Stock Data Every 2 Hours
+name: Update Stock Data Every 2 hours
 
 on:
   schedule:
