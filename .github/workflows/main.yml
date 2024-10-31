@@ -1,8 +1,8 @@
-name: Update Stock Data Every 2 hours
+name: Scheduled Action
 
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '*/10 * * * *'  # This runs every 10 minutes
 
 jobs:
   update-stock-data:
@@ -35,6 +35,6 @@ jobs:
         run: |
           python manage.py risk
           
-      - name: Update stock perfor
+      - name: Update stock performance
         run: |
           python manage.py perfor
