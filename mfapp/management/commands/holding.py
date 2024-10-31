@@ -2,11 +2,8 @@ import pandas as pd
 import requests
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from mfapp.models import Fund, Portfolio, Holding, RiskVolatility, CSVData,Settings
+from mfapp.models import Fund, Portfolio, Holding, RiskVolatility, CSVData, Settings
 from datetime import datetime, timedelta
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 class Command(BaseCommand):
     help = 'Fetch and store AMC, Fund, Portfolio, and Holdings data from Morningstar API'
