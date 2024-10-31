@@ -2,7 +2,7 @@ name: Scheduled Stock Update
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # This runs every 10 minutes
+    - cron: '0 0 * * *'  # This runs every day at midnight UTC
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
