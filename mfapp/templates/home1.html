@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MF App - Home</title>
+    <link rel="stylesheet" href="{% static 'home_css.css' %}">
+    <link rel="stylesheet" href="{% static 'commands.css' %}">
+    <meta name="csrf-token" content="{% csrf_token %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>MUTUAL FUND DETAILS</h1>
+            <p>Get the Mutual Fund details at a glance!</p>
+        </header>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'process_csv_upload' %}">Upload CSV</a></li>
+                <li><a href="{% url 'update_access_token' %}">Update Access Token</a></li>
+                <li><a href="{% url 'fund_dashboard' %}">Fund Dashboard</a></li>
+            </ul>
+        </nav>
+        <div id="output" class="output"></div>
+        <footer class="footer">
+            <p>&copy; {{ year }} MF App. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

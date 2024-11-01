@@ -1,4 +1,4 @@
-# mfapp/feature/fund_search.py
+# mfapp/feature/Fund_nav_chart.py
 import requests
 import logging
 from django.db.models import Q

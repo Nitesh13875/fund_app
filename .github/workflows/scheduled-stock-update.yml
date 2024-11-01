@@ -1,4 +1,4 @@
-name: Scheduled Stock Update
+name: Scheduled
 
 on:
   schedule:
@@ -11,12 +11,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11.5'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
@@ -26,15 +34,19 @@ jobs:
       - name: Fetch stock data
         run: |
           python manage.py fetch_main
+        continue-on-error: true
 
       - name: Update stock holdings
         run: |
-          python manage.py holding 
+          python manage.py holding
+        continue-on-error: true
 
       - name: Update stock info
         run: |
           python manage.py risk
-          
+        continue-on-error: true
+
       - name: Update stock performance
         run: |
-          python manage.py perfor  # Ensure this command is correct
+          python manage.py perfor
+        continue-on-error: true
