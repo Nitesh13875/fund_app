@@ -29,4 +29,4 @@ def update_access_token(request):
 
     # Pass existing tokens to the template
     tokens = Settings.objects.all()
-    return render(request, r'C:\Users\nites\Desktop\MF\mfp\mfapp\templates\update_access_token.html', {'form': form, 'tokens': tokens})
+    return render(request, 'update_access_token.html', {'form': form, 'tokens': tokens})

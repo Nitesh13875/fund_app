@@ -1,4 +1,3 @@
-
 /* Basic Reset */
 * {
     margin: 0;
@@ -9,11 +8,11 @@
 body {
     font-family: 'Arial', sans-serif;
     color: #333;
-    background: #f5f9f6;
+    background: #f5f9f6; /* Light background */
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Change to column for overall layout */
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Centered alignment for the body */
     min-height: 100vh;
 }
 
@@ -21,10 +20,10 @@ body {
     max-width: 800px;
     width: 100%;
     margin: 20px;
-    background: #ffffff;
+    background: #ffffff; /* White background for container */
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Slightly deeper shadow */
-    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
 .header {
@@ -35,9 +34,7 @@ body {
 }
 
 .header h1 {
-    font-size: 2.5em; /* Slightly larger heading */
-    font-weight: bold;
-    margin-bottom: 10px; /* Add some space below the title */
+    font-size: 2.5em; /* Larger heading */
 }
 
 .header p {
@@ -114,4 +111,56 @@ body {
     padding: 10px;
     text-align: center;
     font-size: 0.9em;
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0; /* Add margin above and below */
+}
+
+.search-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 60%; /* Adjust width as needed */
+    margin-right: 10px; /* Space between input and button */
+}
+
+.search-form button {
+    padding: 10px 20px;
+    background: #4CAF50; /* Match button with header */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-form button:hover {
+    background: #388e3c; /* Darker green on hover */
+}
+
+.error-message {
+    color: #d32f2f; /* Red color for error messages */
+    text-align: center;
+    margin: 15px 0; /* Margin for spacing */
+}
+
+.chart-container {
+    margin-top: 20px; /* Space above the chart */
+}
+
+/* Additional Styles for Responsive Design */
+@media (max-width: 600px) {
+    .search-form {
+        flex-direction: column; /* Stack elements on smaller screens */
+        align-items: center; /* Center elements */
+    }
+
+    .search-form input {
+        width: 100%; /* Full width on small screens */
+        margin-right: 0; /* Remove margin */
+        margin-bottom: 10px; /* Space below the input */
+    }
 }

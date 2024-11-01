@@ -69,7 +69,7 @@ def process_csv_upload(request):
 
     form = UploadCSVForm()
     current_year = datetime.now().year
-    return render(request, 'dashboard.html', {
+    return render(request, 'access_token.html', {
         'form': form,
         'current_year': current_year,
         'last_refresh_time': last_refresh_time,

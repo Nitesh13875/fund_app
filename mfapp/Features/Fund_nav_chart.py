@@ -3,13 +3,23 @@ import requests
 import logging
 from django.db.models import Q
 from mfapp.forms import FundSearchForm
-from mfapp.models import Dt,CSVData
+from mfapp.models import CSVData
 from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
 
+API_URL = 'https://api.mfapi.in/mf/'
 
 def fund_dashboard(request):
+    """
+    Handle the fund dashboard view, processing search requests and fetching NAV data.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Rendered HTML response with fund data.
+    """
     context = {
         'form': FundSearchForm(),
         'dates': [],
@@ -34,19 +44,19 @@ def fund_dashboard(request):
                 )
 
                 # Fetch historical data using the scheme code from the API
-                historical_data = requests.get(f'https://api.mfapi.in/mf/{mutual_fund.scheme_code}')
+                response = requests.get(f'{API_URL}{mutual_fund.scheme_code}')
 
-                if historical_data.ok:
-                    data = historical_data.json().get('data', [])
+                if response.ok:
+                    data = response.json().get('data', [])
                     context['dates'] = [entry['date'] for entry in data]
                     context['navs'] = [entry['nav'] for entry in data]
                     context['scheme_name'] = mutual_fund.scheme_name
                     logger.info(f"Fetched NAV data for {mutual_fund.scheme_name}: Dates - {context['dates']}, NAVs - {context['navs']}")
                 else:
                     context['error'] = 'Error fetching historical data from API.'
-                    logger.error(f"API request failed with status code: {historical_data.status_code}")
+                    logger.error(f"API request failed with status code: {response.status_code}")
 
-            except Dt.DoesNotExist:
+            except CSVData.DoesNotExist:
                 context['error'] = 'No mutual fund found with the given ID, ISIN, scheme name, or scheme code.'
                 logger.warning(context['error'])
             except Exception as e:
@@ -54,4 +64,5 @@ def fund_dashboard(request):
                 logger.error(f"Unexpected error: {str(e)}")
 
     # Return an HttpResponse using render
-    return render(request, 'hello.html', context)
+    return render(request, 'Fund_nav_chart.html', context)
+
