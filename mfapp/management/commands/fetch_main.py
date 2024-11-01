@@ -3,22 +3,33 @@ from mfapp.models import Dt, CSVData, StockDataRefresh
 import requests
 from datetime import datetime, timedelta
 import logging
-
+import time
+from requests.exceptions import ChunkedEncodingError, RequestException
 logging.basicConfig(level=logging.INFO)
-
 class Command(BaseCommand):
     help = 'Load data from data.csv into Dt model and calculate returns'
 
     def fetch_nav_history(self, scheme_code):
         url = f"https://api.mfapi.in/mf/{scheme_code}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json().get('data', [])
-            if not data:
-                logging.warning(f"No NAV data returned for scheme code: {scheme_code}")
-            return data
-        else:
-            return None
+        retries = 3
+        for attempt in range(retries):
+            try:
+                response = requests.get(url, timeout=(3, 10))  # Set connect and read timeouts
+                if response.status_code == 200:
+                    data = response.json().get('data', [])
+                    if not data:
+                        logging.warning(f"No NAV data returned for scheme code: {scheme_code}")
+                    return data
+                else:
+                    logging.error(f"Failed to fetch data for scheme code {scheme_code}, status code {response.status_code}")
+                    return None
+            except (ChunkedEncodingError, RequestException) as e:
+                logging.warning(f"Attempt {attempt + 1} failed for scheme code {scheme_code}: {e}")
+                if attempt < retries - 1:
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                else:
+                    logging.error(f"All retries failed for scheme code {scheme_code}")
+                    return None
 
     def get_closest_nav(self, nav_data, target_date):
         nav_data_sorted = sorted(nav_data, key=lambda x: datetime.strptime(x['date'], '%d-%m-%Y'), reverse=True)
